@@ -1,5 +1,5 @@
 {
-  "name": "safestorage",
+  "name": "@yehonadav/safestorage",
   "version": "1.0.3",
   "description": "Replace JSON.stringify with safeStringify to stringify circular objects",
   "author": "yehonadav",

@@ -7,26 +7,27 @@ Fallback to in-memory implementation if default browser implementations aren't a
 ## install
 
 ```
-npm i safestorage
+npm i @yehonadav/safestorage
 ```
 
 ## usage
 
 ```typescript
-import {local, setStorageItem, getStorageItem, delStorageItem} from "safesstorage"
+import {persistLocal} from "safesstorage"
 
-setStorageItem(local, )
+// set items
+persistLocal.setItem('book', {name:"Book", author:"John Blue"});
 
-const data = 3;
-a.a = a;
-a.b = 'b';
-setStorageItem()
-console.log(safeStringify(a));
-// result:
-// {
-//   "b": "b"
-// }
+// get items
+const book = persistLocal.getItem<string>('name');
+console.log(book);
 
+// delete items
+persistLocal.delItem('name');
+
+// safely get items
+const {value, error} = persistLocal.tryToGetItem<string>('name');
+console.log({value, error});
 ```
 
 enjoy =)  

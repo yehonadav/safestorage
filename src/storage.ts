@@ -26,6 +26,15 @@ export const getStorageItem = <T=any>(storage:Storage, uuid: string):T => {
   return JSON.parse(value).data
 };
 
+export const tryToGetStorageItem = <T=any>(storage:Storage, uuid: string):{value?: T, error?: Error} => {
+  try {
+    return {value: getStorageItem<T>(storage, uuid)};
+  }
+  catch (error) {
+    return {error}
+  }
+};
+
 export const delStorageItem = (storage:Storage, uuid: string):void => {
   // eslint-disable-next-line no-empty
   try{storage.removeItem(uuid)}catch(e){}
@@ -33,9 +42,11 @@ export const delStorageItem = (storage:Storage, uuid: string):void => {
 
 export class StorageHandler {
   storage: Storage;
+  clear: () => void;
 
   constructor(storage:Storage) {
     this.storage = storage;
+    this.clear = storage.clear;
   }
 
   getItems <T=Record<string, any>>():T {
@@ -48,6 +59,10 @@ export class StorageHandler {
 
   getItem <T=any>(uuid: string):T {
     return getStorageItem<T>(this.storage, uuid)
+  }
+
+  tryToGetItem <T=any>(uuid: string):{value?: T, error?: Error} {
+    return tryToGetStorageItem<T>(this.storage, uuid);
   }
 
   delItem (uuid: string):void {
