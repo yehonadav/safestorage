@@ -50,10 +50,52 @@ export const delStorageItem = (storage:Storage, uuid: string):void => {
 export class StorageHandler {
   storage: Storage;
   clear: () => void;
+  private _debug: boolean;
+  private readonly _setItem: (key:string, value:any) => void;
+  private readonly _clear: () => void;
+  private readonly _removeItem: (key:string) => void;
 
   constructor(getStorage: () => Storage) {
     this.storage = storageFactory(getStorage);
     this.clear = this.storage.clear;
+
+    this._debug = false;
+    this._setItem = this.storage.setItem;
+    this._clear = this.storage.clear;
+    this._removeItem = this.storage.removeItem;
+  }
+
+  setDebug(debug:boolean) {
+    this._debug = debug;
+
+    if (debug) {
+      this.storage.setItem = (key, value) => {
+        console.log({"storage.setItem": {key, value}});
+        this._setItem(key, value);
+      };
+
+      this.storage.clear = () => {
+        console.log("storage.clear");
+        this._clear();
+      };
+
+      this.storage.removeItem = (key) => {
+        console.log({"storage.removeItem": {key}});
+        this._removeItem(key);
+      };
+    }
+
+    else {
+      if (debug) {
+        this.storage.setItem = this._setItem;
+        this.storage.clear = this._clear;
+        this.storage.removeItem = this._removeItem;
+      }
+    }
+  }
+
+  getDebug() {
+    return this._debug;
   }
 
   getItems <T=Record<string, any>>():T {
