@@ -1,5 +1,5 @@
 import { storageFactory } from "storage-factory";
-import { safeStringify } from '@yehonadav/safestringify'
+import { stringify } from '@yehonadav/safestringify'
 
 export const getStorageItems = (storage:Storage):Record<string, any> => {
   const result:Record<string, any> = {};
@@ -22,7 +22,7 @@ export const getStorageItems = (storage:Storage):Record<string, any> => {
   return result
 }
 
-export const setStorageItem = <T=any>(storage:Storage, uuid: string, data: T):void => {storage.setItem(uuid, safeStringify({data}))};
+export const setStorageItem = <T=any>(storage:Storage, uuid: string, data: T):void => {storage.setItem(uuid, stringify({data}))};
 
 export const getStorageItem = <T=any>(storage:Storage, uuid: string):T => {
   const value = storage.getItem(uuid);
