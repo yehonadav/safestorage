@@ -22,7 +22,7 @@ export const getStorageItems = (storage:Storage):Record<string, any> => {
   return result
 }
 
-export const setStorageItem = <T=any>(storage:Storage, uuid: string, data: T):void => {storage.setItem(uuid, stringify({data}))};
+export const setStorageItem = <T=any>(storage:Storage, uuid: string, state: T):void => {storage.setItem(uuid, stringify({state}))};
 
 export const getStorageItem = <T=any>(storage:Storage, uuid: string):T => {
   const value = storage.getItem(uuid);
@@ -30,7 +30,7 @@ export const getStorageItem = <T=any>(storage:Storage, uuid: string):T => {
   if (value === null)
     throw Error(`getStorageItemValueError: storage.getItem('${uuid}') did not return a value`);
 
-  return JSON.parse(value).data
+  return JSON.parse(value).state
 };
 
 export const tryToGetStorageItem = <T=any>(storage:Storage, uuid: string):{value?: T, error?: Error} => {
@@ -60,8 +60,8 @@ export class StorageHandler {
     return getStorageItems(this.storage) as T;
   }
 
-  setItem (uuid: string, data: any):void {
-    setStorageItem(this.storage, uuid, data);
+  setItem (uuid: string, state: any):void {
+    setStorageItem(this.storage, uuid, state);
   }
 
   getItem <T=any>(uuid: string):T {
