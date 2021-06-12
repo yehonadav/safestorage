@@ -1,16 +1,23 @@
 import { storageFactory } from "storage-factory";
 import { safeStringify } from '@yehonadav/safestringify'
 
-export const local = storageFactory(() => localStorage);
-export const session = storageFactory(() => sessionStorage);
+export const getStorageItems = (storage:Storage):Record<string, any> => {
+  const result:Record<string, any> = {};
 
-export const getStorage = <T=Record<string, any>>(storage:Storage):T => {
-  const result:any = {};
+  for (let i = 0, len = storage.length; i < len; ++i ) {
+    try {
+      const k = storage.key(i);
 
-  Object.keys(storage).forEach(k => {
-    const value = storage.getItem(k);
-    result[k] = value ? JSON.parse(value) : value;
-  })
+      if (k === null)
+        continue;
+
+      const value = storage.getItem(k);
+      result[k] = value ? JSON.parse(value) : value;
+    }
+    catch (e) {
+      console.error({getStorageItemsError: e});
+    }
+  }
 
   return result
 }
@@ -44,13 +51,13 @@ export class StorageHandler {
   storage: Storage;
   clear: () => void;
 
-  constructor(storage:Storage) {
-    this.storage = storage;
-    this.clear = storage.clear;
+  constructor(getStorage: () => Storage) {
+    this.storage = storageFactory(getStorage);
+    this.clear = this.storage.clear;
   }
 
   getItems <T=Record<string, any>>():T {
-    return getStorage(this.storage);
+    return getStorageItems(this.storage) as T;
   }
 
   setItem (uuid: string, data: any):void {
@@ -70,5 +77,8 @@ export class StorageHandler {
   }
 }
 
-export const persistLocal = new StorageHandler(local);
-export const persistSession = new StorageHandler(session);
+export const persistLocal = new StorageHandler(() => localStorage);
+export const persistSession = new StorageHandler(() => sessionStorage);
+
+export const local = persistLocal.storage;
+export const session = persistSession.storage;

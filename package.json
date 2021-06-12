@@ -13,7 +13,7 @@
   "scripts": {
     "build": "rollup -c",
     "start": "rollup -c -w",
-    "build:version": "npm run build && npm version patch && npm publish --access=public",
+    "build:version": "npm run build && npm version patch && npm publish --access=public && git push",
     "update:version": "git add . && git commit -am \"update\" && git push && npm run build:version",
     "i:update:version": "npm i && npm run update:version"
   },

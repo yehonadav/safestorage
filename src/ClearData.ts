@@ -1,4 +1,4 @@
-import {local, session, getStorage} from './storage';
+import {local, session, getStorageItems} from './storage';
 
 export type ExcludedItemsType = {[x:string]:any};
 
@@ -51,8 +51,8 @@ export const clearCachedData = async ():Promise<void> => {
       type: 'info',
       message: "cleared session & local storage",
       data: {
-        session: getStorage(session),
-        local: getStorage(local),
+        session: getStorageItems(session),
+        local: getStorageItems(local),
       },
     }
   });
